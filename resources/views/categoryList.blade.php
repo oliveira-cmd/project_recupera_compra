@@ -3,7 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Lista de Categorias') }}
         </h2>
-
+        </br>
         <div class="registerCategory">
             <a href="{{url('/registerCategory')}}">
                 <h3>Cadastrar nova categoria</h3>
