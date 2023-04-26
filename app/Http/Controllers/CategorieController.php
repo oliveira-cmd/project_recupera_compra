@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Categorie;
+use Illuminate\Support\Facades\Redirect;
 
 class CategorieController extends Controller
 {
@@ -20,7 +21,7 @@ class CategorieController extends Controller
 
     public function index()
     {
-        $categorys = $this->category->simplePaginate(10);
+        $categorys = $this->category->paginate(10);
 
         return view('categoryList', compact('categorys'));
     }
@@ -30,7 +31,9 @@ class CategorieController extends Controller
      */
     public function create()
     {
-        //
+        $category = $this->category->all();
+        return view('createCategory', compact('category'));
+
     }
 
     /**
@@ -38,7 +41,14 @@ class CategorieController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $register = $this->category->create([
+            'name'      => $request->name,
+            'id_user'   => $request->user()->id
+        ]);
+
+        if($register){
+            return Redirect::to('/listCategories');
+        }
     }
 
     /**
@@ -56,7 +66,11 @@ class CategorieController extends Controller
     {
         $category = $this->category->find($id);
 
-        return view('categoryForm', compact('category'));
+        if($category){
+            return view('categoryForm', compact('category'));
+        } else {
+            return Redirect::to('/listCategories'); 
+        }
     }
 
     /**
@@ -64,7 +78,13 @@ class CategorieController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $update = $this->category->where(['id' => $id])->update([
+            'name'  => $request->name
+        ]);
+
+        if($update){
+            return Redirect::to('/listCategories');
+        }
     }
 
     /**
@@ -72,6 +92,12 @@ class CategorieController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = $this->category->find($id);
+
+        $destroy = $category->delete();
+
+        if($destroy){
+            return Redirect::to('/listCategories');
+        }
     }
 }
